@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Pemanfaatan Sriharjo</title>
+		<link
+			href="https://unsorry.net/assets-date/images/favicon.png"
+			rel="shortcut icon"
+			type="image/png"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://unpkg.com/leaflet@1.9.1/dist/leaflet.css"
+		/>
+
+
+		<style>
+			html,
+			body,
+			#map {
+				height: 100%;
+				width: 100%;
+				margin: 0px;
+			}
+		</style>
+	</head>
+	<body>
+		<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+		<script src="https://unpkg.com/leaflet@1.9.1/dist/leaflet.js"></script>
+		<div id="map"></div>
+		<script>
+			/* Initial Map */
+			var map = L.map("map").setView([-7.946013965843441, 110.37244546215176], 16);
+
+			/* Tile Basemap */
+			var basemap = L.tileLayer(
+				"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+				{
+					attribution:
+						'<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | <a href="https://www.unsorry.net" target="_blank">unsorry@2022</a>',
+				}
+			);
+			basemap.addTo(map);
+
+			/* GeoJSON Polygon */
+			var polygon = L.geoJson(null, {
+				/* Style polygon */
+				style: function (feature) {
+					if (feature.properties.Pemanfaata === "kegiatan ekonomi/ perdagangan")
+					return {
+						color: "#0f0f0f",
+						fillColor: "#c9c200",
+						weight: 2,
+						opacity: 1,
+						fillOpacity: 2,
+					}
+					if (feature.properties.Pemanfaata === "produksi pertanian")
+					return {
+						color: "#0f0f0f",
+						fillColor: "#6bc200",
+						weight: 2,
+						opacity: 1,
+						fillOpacity: 2,
+					}
+					if (feature.properties.Pemanfaata === "tempat tinggal")
+					return {
+						color: "#0f0f0f",
+						fillColor: "#ffbf00",
+						weight: 2,
+						opacity: 1,
+						fillOpacity: 2,
+					}
+					if (feature.properties.Pemanfaata === "tidak ada pemanfaatan tanah")
+					return {
+						color: "#0f0f0f",
+						fillColor: "#cccccc",
+						weight: 2,
+						opacity: 1,
+						fillOpacity: 2,
+					}
+					if (feature.properties.Pemanfaata === "usaha jasa")
+					return {
+						color: "#0f0f0f",
+						fillColor: "#e6e600",
+						weight: 2,
+						opacity: 1,
+						fillOpacity: 2,
+					}
+                    if (feature.properties.Pemanfaata === "fasos\/ fasum")
+					return {
+						color: "#0f0f0f",
+						fillColor: "#d79696",
+						weight: 2,
+						opacity: 1,
+						fillOpacity: 2,
+					}
+				},
+				onEachFeature: function (feature, layer) {
+					var popupContent = "Nama: " + feature.properties.Nama + "<br>" + 
+						"WILAYAH: " +  feature.properties.WILAYAH + "<br>" +
+						"Pemanfaata: " + feature.properties.Pemanfaata + "<br>" +
+						"Luas: " + feature.properties.Luas + " km2";
+					layer.on({
+						click: function (e) {
+							polygon.bindPopup(popupContent);
+						},
+						mouseover: function (e) {
+							polygon.bindTooltip(feature.properties.Nama + "<br>" + feature.properties.WILAYAH + "<br>" + feature.properties.Pemanfaata + "<br>" + feature.properties.Luas + " km2" , {
+								sticky: true,
+							});
+						},
+					});
+				},
+			});
+			$.getJSON("Pemanfaatan_Sri.geojson", function (data) {
+				polygon.addData(data);
+				map.addLayer(polygon);
+			});
+		</script>
+	</body>
+</html>
